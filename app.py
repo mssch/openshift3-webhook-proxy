@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import sys
 import json
 import requests
 
@@ -19,8 +20,8 @@ def webhook_travis_ci(cluster, project, application):
     fields = json.loads(request.form['payload'])
 
     if debug:
-        print('inbound-authorization:', authorization)
-        print('inbound-payload:', fields)
+        print('inbound-authorization:', authorization, file=sys.stderr)
+        print('inbound-payload:', fields, file=sys.stderr)
 
     if fields['status'] not in ('0', None):
         return ''
@@ -55,15 +56,15 @@ def webhook_travis_ci(cluster, project, application):
     verify = not(os.environ.get('SSL_NO_VERIFY', '').lower() in ('1', 'true'))
 
     if debug:
-        print('outbound-url:', url)
-        print('outbound-payload:', payload)
-        print('outbound-verify:', verify)
+        print('outbound-url:', url, file=sys.stderr)
+        print('outbound-payload:', payload, file=sys.stderr)
+        print('outbound-verify:', verify, file=sys.stderr)
 
     try:
         response = requests.post(url, verify=verify, headers=headers, data=data)
 
     except Exception as e:
-        print(e)
+        print(e, file=sys.stderr)
 
         raise
 
