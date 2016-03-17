@@ -1,0 +1,169 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "webhook-proxy",
+                "labels": {
+                    "app": "webhook-proxy"
+                }
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "webhook-proxy",
+                "labels": {
+                    "app": "webhook-proxy"
+                }
+            },
+            "spec": {
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange"
+                    }
+                ],
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "https://github.com/GrahamDumpleton/openshift-webhook-proxy.git"
+                    }
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "namespace": "openshift",
+                            "name": "python:2.7"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "webhook-proxy:latest"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "webhook-proxy",
+                "labels": {
+                    "app": "webhook-proxy"
+                }
+            },
+            "spec": {
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "webhook-proxy"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "webhook-proxy:latest"
+                            }
+                        }
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "app": "webhook-proxy",
+                    "deploymentconfig": "webhook-proxy"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "app": "webhook-proxy",
+                            "deploymentconfig": "webhook-proxy"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "webhook-proxy",
+                                "image": "webhook-proxy:latest",
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "SSL_NO_VERIFY",
+                                        "value": "true"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "webhook-proxy",
+                "labels": {
+                    "app": "webhook-proxy"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "8080-tcp",
+                        "protocol": "TCP",
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "app": "webhook-proxy",
+                    "deploymentconfig": "webhook-proxy"
+                }
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "webhook-proxy",
+                "labels": {
+                    "app": "webhook-proxy"
+                }
+            },
+            "spec": {
+                "to": {
+                    "kind": "Service",
+                    "name": "webhook-proxy"
+                },
+                "port": {
+                    "targetPort": "8080-tcp"
+                },
+                "tls": {
+                    "termination": "edge",
+                    "insecureEdgeTerminationPolicy": "Allow"
+                }
+            }
+        }
+    ]
+}
