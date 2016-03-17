@@ -12,15 +12,21 @@ generic_url = 'https://%(cluster)s/oapi/v1/namespaces/%(project)s/buildconfigs/%
 
 @app.route('/travis-ci/<cluster>/<project>/<application>', methods=['POST'])
 def webhook_travis_ci(cluster, project, application):
-    authorization = request.headers['Authorization']
+    debug = os.environ.get('DEBUG', '').lower() in ('1', 'true')
 
-    url = generic_url % dict(cluster=cluster, project=project,
-            application=application, authorization=authorization)
+    authorization = request.headers['Authorization']
 
     fields = json.loads(request.form['payload'])
 
+    if debug:
+        print('inbound-authorization:', authorization)
+        print('inbound-payload:', fields)
+
     if fields['status'] not in ('0', None):
         return ''
+
+    url = generic_url % dict(cluster=cluster, project=project,
+            application=application, authorization=authorization)
 
     payload = {}
 
@@ -44,9 +50,14 @@ def webhook_travis_ci(cluster, project, application):
     headers = {}
     headers['Content-Type'] = 'application/json'
 
-    data=json.dumps(payload)
+    data = json.dumps(payload)
 
     verify = not(os.environ.get('SSL_NO_VERIFY', '').lower() in ('1', 'true'))
+
+    if debug:
+        print('outbound-url:', url)
+        print('outbound-payload:', payload)
+        print('outbound-verify:', verify)
 
     try:
         response = requests.post(url, verify=verify, headers=headers, data=data)
