@@ -23,7 +23,7 @@ def webhook_travis_ci(cluster, project, application):
         print('inbound-authorization:', authorization, file=sys.stderr)
         print('inbound-payload:', fields, file=sys.stderr)
 
-    if fields['status'] not in ('0', None):
+    if fields['status'] not in (0, None):
         return ''
 
     url = generic_url % dict(cluster=cluster, project=project,
