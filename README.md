@@ -112,11 +112,11 @@ http://<webhook-proxy-host>/travis-ci/<openshift-api-host>/<project>/<applicatio
 If your OpenShift cluster is using a self signed SSL certificate, use
 ``http`` for the scheme.
 
-Once setup, commit the change and push your change to your code repositry.
+Once setup, commit the change and push your change to your code repository.
 When Travis-CI picks up that a push has occurred, once the tests are run
-the webhook should be triggered. This will go to the webhook proxy
-service, which will translate the webhook format to that expected by
-OpenShift and pass it through to OpenShift.
+the webhook should be triggered. This will go to the webhook proxy service,
+which will translate the webhook format to that expected by OpenShift and
+pass it through to OpenShift.
 
 The result should be that a new build of your application should be
 triggered.
