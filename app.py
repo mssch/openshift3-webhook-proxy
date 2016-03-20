@@ -6,8 +6,10 @@ import json
 import requests
 
 from flask import Flask, request
+from werkzeug.contrib.fixers import ProxyFix
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 generic_url = 'https://%(cluster)s/oapi/v1/namespaces/%(project)s/buildconfigs/%(application)s/webhooks/%(authorization)s/generic'
 
@@ -20,6 +22,7 @@ def webhook_travis_ci(cluster, project, application):
     fields = json.loads(request.form['payload'])
 
     if debug:
+        print('inbound-headers:', request.headers, file=sys.stderr)
         print('inbound-authorization:', authorization, file=sys.stderr)
         print('inbound-payload:', fields, file=sys.stderr)
 
@@ -53,7 +56,10 @@ def webhook_travis_ci(cluster, project, application):
 
     data = json.dumps(payload)
 
-    verify = not(os.environ.get('SSL_NO_VERIFY', '').lower() in ('1', 'true'))
+    if os.environ.get('SSL_NO_VERIFY'):
+        verify = not(os.environ.get('SSL_NO_VERIFY', '').lower() in ('1', 'true'))
+    else:
+        verify = request.is_secure
 
     if debug:
         print('outbound-url:', url, file=sys.stderr)
