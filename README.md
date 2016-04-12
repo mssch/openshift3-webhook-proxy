@@ -14,7 +14,7 @@ following services:
 To deploy the service within your OpenShift environment, run the command:
 
 ```
-oc create -f https://raw.githubusercontent.com/GrahamDumpleton/openshift-webhook-proxy/master/openshift.json
+oc create -f https://raw.githubusercontent.com/GrahamDumpleton/openshift3-webhook-proxy/master/openshift.json
 ```
 
 You can create this within the same project namespace as the application
