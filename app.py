@@ -29,8 +29,8 @@ def webhook_gogs(cluster, project, application):
 #    if fields['status'] not in (0, None):
 #        return ''
 #
-#    url = generic_url % dict(cluster=cluster, project=project,
-#            application=application, authorization=authorization)
+    url = generic_url % dict(cluster=cluster, project=project,
+            application=application, authorization=authorization)
 #
 #    payload = {}
 #
