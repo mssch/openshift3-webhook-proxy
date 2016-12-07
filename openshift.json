@@ -34,7 +34,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/GrahamDumpleton/openshift3-webhook-proxy.git"
+                        "uri": "https://github.com/mssch/openshift3-webhook-proxy.git"
                     }
                 },
                 "strategy": {
