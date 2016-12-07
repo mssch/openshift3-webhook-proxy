@@ -54,7 +54,7 @@ def webhook_gogs(cluster, project, application):
     headers = {}
     headers['Content-Type'] = 'application/json'
 
-    data = json.dumps(payload)
+#    data = json.dumps(payload)
 
 #    if os.environ.get('SSL_NO_VERIFY'):
 #        verify = not(os.environ.get('SSL_NO_VERIFY', '').lower() in ('1', 'true'))
