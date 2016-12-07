@@ -67,7 +67,7 @@ def webhook_gogs(cluster, project, application):
 #        print('outbound-verify:', verify, file=sys.stderr)
 
     try:
-        response = requests.post(url, verify=false, headers=headers, data=None)
+        response = requests.post(url, verify=False, headers=headers, data=None)
         #response = requests.post(url, verify=verify, headers=headers, data=data)
 
     except Exception as e:
