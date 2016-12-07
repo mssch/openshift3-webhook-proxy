@@ -17,7 +17,7 @@ generic_url = 'https://%(cluster)s/oapi/v1/namespaces/%(project)s/buildconfigs/%
 def webhook_gogs(cluster, project, application):
 #    debug = os.environ.get('DEBUG', '').lower() in ('1', 'true')
     debug = True 
-    authorization = request.headers['Authorization']
+#    authorization = request.headers['Authorization']
 
 #    fields = json.loads(request.form['payload'])
 #
@@ -30,7 +30,7 @@ def webhook_gogs(cluster, project, application):
 #        return ''
 #
     url = generic_url % dict(cluster=cluster, project=project,
-            application=application, authorization=None)
+            application=application, authorization='ebpiawesomesecret')
 #
 #    payload = {}
 #
