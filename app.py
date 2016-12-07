@@ -13,8 +13,8 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 
 generic_url = 'https://%(cluster)s/oapi/v1/namespaces/%(project)s/buildconfigs/%(application)s/webhooks/%(authorization)s/generic'
 
-@app.route('/travis-ci/<cluster>/<project>/<application>', methods=['POST'])
-def webhook_travis_ci(cluster, project, application):
+@app.route('/gogs/<cluster>/<project>/<application>', methods=['POST'])
+def webhook_gogs(cluster, project, application):
     debug = os.environ.get('DEBUG', '').lower() in ('1', 'true')
 
     authorization = request.headers['Authorization']
