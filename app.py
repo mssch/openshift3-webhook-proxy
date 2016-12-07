@@ -15,59 +15,60 @@ generic_url = 'https://%(cluster)s/oapi/v1/namespaces/%(project)s/buildconfigs/%
 
 @app.route('/gogs/<cluster>/<project>/<application>', methods=['POST'])
 def webhook_gogs(cluster, project, application):
-    debug = os.environ.get('DEBUG', '').lower() in ('1', 'true')
+#    debug = os.environ.get('DEBUG', '').lower() in ('1', 'true')
+    debug = True 
+#    authorization = request.headers['Authorization']
 
-    authorization = request.headers['Authorization']
-
-    fields = json.loads(request.form['payload'])
-
-    if debug:
-        print('inbound-headers:', request.headers, file=sys.stderr)
-        print('inbound-authorization:', authorization, file=sys.stderr)
-        print('inbound-payload:', fields, file=sys.stderr)
-
-    if fields['status'] not in (0, None):
-        return ''
-
-    url = generic_url % dict(cluster=cluster, project=project,
-            application=application, authorization=authorization)
-
-    payload = {}
-
-    payload['type'] = 'git'
-
-    payload['git'] = dict(
-        uri=fields['repository']['url'],
-        refs='refs/heads/'+fields['branch'],
-        commit=fields['commit'],
-        author=dict(
-            name=fields['author_name'],
-            email=fields['author_email']
-        ),
-        committer=dict(
-            name=fields['committer_name'],
-            email=fields['committer_email']
-        ),
-        message=fields['message']
-    )
+#    fields = json.loads(request.form['payload'])
+#
+#    if debug:
+#        print('inbound-headers:', request.headers, file=sys.stderr)
+#        print('inbound-authorization:', authorization, file=sys.stderr)
+#        print('inbound-payload:', fields, file=sys.stderr)
+#
+#    if fields['status'] not in (0, None):
+#        return ''
+#
+#    url = generic_url % dict(cluster=cluster, project=project,
+#            application=application, authorization=authorization)
+#
+#    payload = {}
+#
+#    payload['type'] = 'git'
+#
+#    payload['git'] = dict(
+#        uri=fields['repository']['url'],
+#        refs='refs/heads/'+fields['branch'],
+#        commit=fields['commit'],
+#        author=dict(
+#            name=fields['author_name'],
+#            email=fields['author_email']
+#        ),
+#        committer=dict(
+#            name=fields['committer_name'],
+#            email=fields['committer_email']
+#        ),
+#        message=fields['message']
+#    )
 
     headers = {}
     headers['Content-Type'] = 'application/json'
 
     data = json.dumps(payload)
 
-    if os.environ.get('SSL_NO_VERIFY'):
-        verify = not(os.environ.get('SSL_NO_VERIFY', '').lower() in ('1', 'true'))
-    else:
-        verify = request.is_secure
+#    if os.environ.get('SSL_NO_VERIFY'):
+#        verify = not(os.environ.get('SSL_NO_VERIFY', '').lower() in ('1', 'true'))
+#    else:
+#        verify = request.is_secure
 
-    if debug:
-        print('outbound-url:', url, file=sys.stderr)
-        print('outbound-payload:', payload, file=sys.stderr)
-        print('outbound-verify:', verify, file=sys.stderr)
+#    if debug:
+#        print('outbound-url:', url, file=sys.stderr)
+#        print('outbound-payload:', payload, file=sys.stderr)
+#        print('outbound-verify:', verify, file=sys.stderr)
 
     try:
-        response = requests.post(url, verify=verify, headers=headers, data=data)
+        response = requests.post(url, verify=false, headers=headers, data=None)
+        #response = requests.post(url, verify=verify, headers=headers, data=data)
 
     except Exception as e:
         print(e, file=sys.stderr)
