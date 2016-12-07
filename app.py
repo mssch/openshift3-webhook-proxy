@@ -30,7 +30,7 @@ def webhook_gogs(cluster, project, application):
 #        return ''
 #
     url = generic_url % dict(cluster=cluster, project=project,
-            application=application, authorization=authorization)
+            application=application, authorization=None)
 #
 #    payload = {}
 #
